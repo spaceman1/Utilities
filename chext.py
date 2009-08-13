@@ -91,7 +91,7 @@ def rename(dirPath, fileName, newExt, dryRun, verbosity, ignoredNames, targetExi
 	if fileName not in ignoredNames:
 		oldPath = os.path.join(dirPath, fileName)
 		newPath = os.path.join(dirPath, base) + '.' + newExt
-		if not os.path.exists(newPath) or targetExists == 'force' or newPath != oldPath or targetExists != 'skip' and raw_input('Replace %s [y/n]:' % newPath).startswith('y'):
+		if newPath != oldPath and (not os.path.exists(newPath) or targetExists == 'force' or targetExists != 'skip' and raw_input('Replace %s [y/n]:' % newPath).startswith('y')):
 			if not dryRun:
 				os.rename(oldPath, newPath)
 			if verbosity == 'high':
