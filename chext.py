@@ -6,7 +6,6 @@ import os
 # TODO: add a follow linked directories option (-H)
 # TODO: prompt/skip if newPath exists (-f --no-prompt, -p --prompt, -k --skip-existing)
 # TODO: add options for changing linked file (-L --linked-only, -b --link-and-original)
-# TODO: Expand ~ in path
 
 def main():
 	try:
@@ -55,7 +54,6 @@ def main():
 			ignoredNames.append(a)
 		elif o in ('-n', '--dry-run'):
 			dryRun = True
-			verbosity = 'high'
 		elif o in ('-q', '--quiet') and not dryRun:
 			verbosity = 'low'
 		elif o in ('-v', '--verbose'):
@@ -69,7 +67,7 @@ def main():
 		return
 	
 	newExt = args[0]
-	
+
 	for path in args[1:]:
 		path = os.path.expanduser(path)
 		if os.path.isdir(path):
@@ -81,25 +79,26 @@ def main():
 					if includeDirs:
 						targets = targets + dirNames
 					for target in targets:
-						rename(dirPath, target, newExt, dryRun, verbosity, ignoredNames)
+						rename(dirPath, target, newExt, dryRun, verbosity, ignoredNames, targetExists)
 			elif includeDirs:
 				# here path is a directory and recursive is false
-				rename('', path, newExt, dryRun, verbosity, ignoredNames)
+				rename('', path, newExt, dryRun, verbosity, ignoredNames, targetExists)
 		elif not dirsOnly: 
 			# here path is a file
-			rename('', path, newExt, dryRun, verbosity, ignoredNames)
+			rename('', path, newExt, dryRun, verbosity, ignoredNames, targetExists)
 
-def rename(dirPath, fileName, newExt, dryRun, verbosity, ignoredNames):
+def rename(dirPath, fileName, newExt, dryRun, verbosity, ignoredNames, targetExists):
 	(base, ext) = os.path.splitext(fileName)
 	if fileName not in ignoredNames:
 		oldPath = os.path.join(dirPath, fileName)
 		newPath = os.path.join(dirPath, base) + '.' + newExt
-		if not dryRun:
-			os.rename(oldPath, newPath)
-		if verbosity == 'high':
-			print '%s -> %s' % (oldPath, newPath)
-		elif verbosity == 'normal':
-			print newPath
+		if not os.path.exists(newPath) or targetExists == 'force' or newPath != oldPath or targetExists != 'skip' and raw_input('Replace %s [y/n]:' % newPath).startswith('y'):
+			if not dryRun:
+				os.rename(oldPath, newPath)
+			if verbosity == 'high':
+				print '%s -> %s' % (oldPath, newPath)
+			elif verbosity == 'normal':
+				print newPath
 	
 def usage():
 	print 'chext [-rdD] newExtension paths ...'
