@@ -100,18 +100,19 @@ def rename(dirPath, fileName, newExt, dryRun, verbosity, ignoredNames, targetExi
 				print newPath
 	
 def usage():
-	print 'chext [-r] [-dD] [-fpk] [-ifilename] [-qv] [-n] newExtension paths ...'
-	print 'chext -h'
-	print '-r --recursive  Include items in subdirectories'
-	print '-d --include-dirs  Apply new extension to directories'
-	print '-D --dirs-only  Apply new extension to directories but not files. Implies -d'
-	print '-f --no-prompt If a target file exists it will be overwritten. Replaces previous -p and -k'
-	print '-p --prompt If a target file exists an overwrite prompt is displayed. Replaces previous -f and -k. This is the default'
-	print '-k --skip If a target file exists the source file will not be moved. Replaces previous -f and -p'
-	print '-i --ignore Specifies a full filename to skip if encountered. .DS_Store and .localize are ignored by default.'
-	print '-q --quiet No output except error info. Replaces previous -v'
-	print '-v --verbose Verbose output. Replaces previous -q'
-	print '-n --dry-run No files are renamed. Note: behaves differently if more than one file maps to the same target'
-	print '-h  Displays this information'
+	print 'usage:  chext [-r] [-dD] [-fpk] [-ifilename] [-qv] [-n] newExtension paths ...'
+	print '        chext -h'
+	print ''
+	print '  -r --recursive:  Include items in subdirectories'
+	print '  -d --include-dirs:  Apply new extension to directories'
+	print '  -D --dirs-only:  Apply new extension to directories but not files. Implies -d'
+	print '  -f --no-prompt:  If a target file exists it will be overwritten. Replaces previous -p and -k'
+	print '  -p --prompt:  If a target file exists an overwrite prompt is displayed. Replaces previous -f and -k. This is the default'
+	print '  -k --skip:  If a target file exists the source file will not be moved. Replaces previous -f and -p'
+	print '  -i --ignore:  Specifies a full filename to skip if encountered. .DS_Store and .localize are ignored by default.'
+	print '  -q --quiet:  No output except error info. Replaces previous -v'
+	print '  -v --verbose:  Verbose output. Replaces previous -q'
+	print '  -n --dry-run:  No files are renamed. Note: behaves differently if more than one file maps to the same target'
+	print '  -h --help:  Displays this information'
 	
 main()
