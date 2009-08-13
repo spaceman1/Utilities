@@ -6,7 +6,6 @@ import os
 # TODO: add a follow linked directories option (-H)
 # TODO: prompt/skip if newPath exists (-f --no-prompt, -p --prompt, -k --skip-existing)
 # TODO: add options for changing linked file (-L --linked-only, -b --link-and-original)
-# TODO: don't process ignored files
 # TODO: Expand ~ in path
 
 def main():
@@ -39,28 +38,28 @@ def main():
 			dirsOnly = True
 			includeDirs = True
 		elif o in ('-H', '--follow-links'): #####################
-		  followLinks = True
+			followLinks = True
 		elif o in ('-f', '--no-prompt'):  #####################
-		  targetExists = 'force'
+			targetExists = 'force'
 		elif o in ('-p', '--prompt'):  #####################
-		  targetExists = 'prompt'
+			targetExists = 'prompt'
 		elif o in ('-k', '--skip-existing'):  #####################
-		  targetExists = 'skip'
+			targetExists = 'skip'
 		elif o in ('-L', '--linked-only'):  #####################
-		  changeLinked = True
-		  changeFile = False
+			changeLinked = True
+			changeFile = False
 		elif o in ('-b', '--link-and-original'):  #####################
-		  changeLinked = True
-		  changeFile = True
+			changeLinked = True
+			changeFile = True
 		elif o in ('-i', '--ignore'):
-      ignoredNames += a
+			ignoredNames.append(a)
 		elif o in ('-n', '--dry-run'):
-		  dryRun = True
-		  verbosity = 'high'
-    elif o in ('-q', '--quiet') and not dryRun:
-      verbosity = 'low'
-    elif o in ('-v', '--verbose'):
-      verbosity = 'high'
+			dryRun = True
+			verbosity = 'high'
+		elif o in ('-q', '--quiet') and not dryRun:
+			verbosity = 'low'
+		elif o in ('-v', '--verbose'):
+			verbosity = 'high'
 		elif o in ('-h', '--help'):
 			usage()
 			return
@@ -72,6 +71,7 @@ def main():
 	newExt = args[0]
 	
 	for path in args[1:]:
+		path = os.path.expanduser(path)
 		if os.path.isdir(path):
 			if recursive == True:
 				for (dirPath, dirNames, fileNames) in os.walk(path, topdown=False):
@@ -84,7 +84,7 @@ def main():
 						rename(dirPath, target, newExt, dryRun, verbosity, ignoredNames)
 			elif includeDirs:
 				# here path is a directory and recursive is false
-			  rename('', path, newExt, dryRun, verbosity, ignoredNames)
+				rename('', path, newExt, dryRun, verbosity, ignoredNames)
 		elif not dirsOnly: 
 			# here path is a file
 			rename('', path, newExt, dryRun, verbosity, ignoredNames)
@@ -92,15 +92,15 @@ def main():
 def rename(dirPath, fileName, newExt, dryRun, verbosity, ignoredNames):
 	(base, ext) = os.path.splitext(fileName)
 	if fileName not in ignoredNames:
-  	oldPath = os.path.join(dirPath, fileName)
-  	newPath = os.path.join(dirPath, base) + '.' + newExt
-  	if not dryRun:
-    	os.rename(oldPath, newPath)
-  	if verbosity == 'high':
-    	print '%s -> %s' % (oldPath, newPath)
-    elif verbosity == 'normal'
-      print newPath
-  
+		oldPath = os.path.join(dirPath, fileName)
+		newPath = os.path.join(dirPath, base) + '.' + newExt
+		if not dryRun:
+			os.rename(oldPath, newPath)
+		if verbosity == 'high':
+			print '%s -> %s' % (oldPath, newPath)
+		elif verbosity == 'normal':
+			print newPath
+	
 def usage():
 	print 'chext [-rdD] newExtension paths ...'
 	print 'chext -h'
